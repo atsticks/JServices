@@ -3,15 +3,20 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>servicecloud-api</artifactId>
+	<parent>
+		<artifactId>jservice-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<!-- The Basics -->
+		<groupId>org.github.jservice</groupId>
+	</parent>
+	<artifactId>jservice-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<!-- The Basics -->
-	<groupId>org.github.servicecloud</groupId>
-	<description>Cloud Service Registry and Broker.</description>
-	<name>Transparent Service Cloud Library</name>
+	<description>Cloud Service Registry and Broker (API).</description>
+	<name>Transparent Service Cloud Library API</name>
 	<packaging>jar</packaging>
 
-	<url>http://github.com/atsticks/servicecloud</url>
-	
+	<url>http://github.com/atsticks/jservice/jservice-api</url>
+
 </project>
