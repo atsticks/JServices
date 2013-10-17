@@ -19,4 +19,16 @@
 
 	<url>http://github.com/atsticks/jservice/jservice-lib</url>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.jboss.weld.se</groupId>
+			<artifactId>weld-se</artifactId>
+			<version>1.1.5.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jservice</groupId>
+			<artifactId>jservice-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
 </project>
