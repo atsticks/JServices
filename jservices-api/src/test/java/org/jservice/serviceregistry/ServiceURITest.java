@@ -1,4 +1,4 @@
-package org.cloudplate.serviceregistry;
+package org.jservice.serviceregistry;
 
 import static org.junit.Assert.*;
 

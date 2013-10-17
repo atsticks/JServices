@@ -7,15 +7,34 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<!-- The Basics -->
-	<groupId>org.github.jservice</groupId>
+	<groupId>org.jservice</groupId>
 	<description>Cloud Service Registry and Broker.</description>
 	<name>Transparent Service Cloud Library</name>
 	<packaging>pom</packaging>
 
 	<url>http://github.com/atsticks/servicecloud</url>
-	
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.8.2</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+	</dependencies>
+
 	<modules>
-	  <module>jservices-api</module>
+		<module>jservices-api</module>
+		<module>jservices-lib</module>
 	</modules>
-	
+
 </project>

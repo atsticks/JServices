@@ -9,7 +9,7 @@
 		<!-- The Basics -->
 		<groupId>org.jservice</groupId>
 	</parent>
-	<artifactId>jservice-api</artifactId>
+	<artifactId>jservice-lib</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<!-- The Basics -->
@@ -17,6 +17,6 @@
 	<name>Transparent Service Cloud Library API</name>
 	<packaging>jar</packaging>
 
-	<url>http://github.com/atsticks/jservice/jservice-api</url>
+	<url>http://github.com/atsticks/jservice/jservice-lib</url>
 
 </project>
