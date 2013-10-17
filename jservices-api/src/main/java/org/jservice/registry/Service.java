@@ -36,6 +36,8 @@ import org.jservice.locator.ServiceResolver;
 public final class Service {
 	/** The service protocol, e.g. rmi, rest, soap, corba, http etc. */
 	private String protocol;
+	/** The port of the serice interface. */
+	private int port;
 	/** The host or cluster ip address. */
 	private String host;
 	/**
@@ -89,6 +91,15 @@ public final class Service {
 	 */
 	public final String getHost() {
 		return host;
+	}
+
+	/**
+	 * Access the host or cluster ip address.
+	 * 
+	 * @return the host
+	 */
+	public final int getPort() {
+		return port;
 	}
 
 	/**
@@ -205,6 +216,8 @@ public final class Service {
 		private String protocol;
 		/** The host, @see {@link Service#host}. */
 		private String host;
+		/** The posr, @see {@link Service#port}. */
+		private int port;
 		/** The location, @see {@link Service#location}. */
 		private String location;
 		/** The exposed interfaces, @see {@link Service#interfaces}. */
@@ -233,6 +246,17 @@ public final class Service {
 		public final Builder withHost(String host) {
 			this.host = Objects.requireNonNull(host);
 			;
+			return this;
+		}
+
+		/**
+		 * Sets the service host.
+		 * 
+		 * @param host
+		 *            the host to set
+		 */
+		public final Builder withPort(int port) {
+			this.port = port;
 			return this;
 		}
 

@@ -23,7 +23,7 @@ import java.util.Map;
  * The ServiceRegistry is the main administration interface for registering
  * additional services into a catalog. It will rarely used directly, since
  * service registrations is performed transparently by evaluating the
- * {@link ELasticService} annotation.
+ * {@link ElasticService} annotation.
  * 
  * @author Anatole Tresch
  */

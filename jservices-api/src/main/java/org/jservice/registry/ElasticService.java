@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.TYPE })
-public @interface ELasticService {
+public @interface ElasticService {
 	/**
 	 * The protocols to be used. By default jservice tries to evaluate, which
 	 * protocols are used by a given service implementation.
