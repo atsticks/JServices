@@ -19,6 +19,27 @@
 
 	<url>http://github.com/atsticks/jservice/jservice-lib</url>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<debug>true</debug>
+					<optimize>true</optimize>
+					<verbose>true</verbose>
+					<source>${maven.compile.sourceLevel}</source>
+					<target>${maven.compile.targetLevel}</target>
+					<compilerArgument>-g</compilerArgument>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<charset>${project.build.sourceEncoding}</charset>
+					<showDeprecations>true</showDeprecations>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.jboss.weld.se</groupId>
@@ -29,6 +50,11 @@
 			<groupId>org.jservice</groupId>
 			<artifactId>jservice-api</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hazelcast</groupId>
+			<artifactId>hazelcast-all</artifactId>
+			<version>3.0.2</version>
 		</dependency>
 	</dependencies>
 </project>

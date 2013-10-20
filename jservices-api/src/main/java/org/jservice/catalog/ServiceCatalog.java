@@ -30,13 +30,13 @@ import org.jservice.registry.Service;
  */
 public interface ServiceCatalog {
 
-	/**
-	 * Collect all available keys from the contexts of the currently registered
-	 * {@link Service} instances.
-	 * 
-	 * @return the available context keys, never {@code null}.
-	 */
-	public Set<String> getContextKeys();
+//	/**
+//	 * Collect all available keys from the contexts of the currently registered
+//	 * {@link Service} instances.
+//	 * 
+//	 * @return the available context keys, never {@code null}.
+//	 */
+//	public Set<String> getContextKeys();
 
 	/**
 	 * Access all published service from this catalog.
@@ -44,6 +44,26 @@ public interface ServiceCatalog {
 	 * @return the services found.
 	 */
 	public Collection<Service> getServices();
+
+	
+	/**
+	 * 
+	 * Access all published services of a certain type, provided by the given
+	 * protocol.
+	 * 
+	 * @param interfaceType
+	 *            the required type, not {@code null}.
+	 * @param protocol
+	 *            the target protocols
+	 * @return the services found.
+	 */
+	public Collection<Service> getServices(Class interfaceType);
+	
+	
+	public void registerService(Service service);
+	
+	
+	public <T> T getService(Class<T> interfaceType);
 
 	/**
 	 * 
@@ -112,15 +132,15 @@ public interface ServiceCatalog {
 	 */
 	public Collection<Service> findServices(String type,
 			Map<String, String> contextExpression);
-
-	/**
-	 * Evaluate all {@link Service} instances, with the given protocol.
-	 * 
-	 * @param protocol
-	 *            The target protocol
-	 * @return the services found, never {@code null}.
-	 */
-	public Collection<Service> findServicesByProtocol(String protocol);
+//
+//	/**
+//	 * Evaluate all {@link Service} instances, with the given protocol.
+//	 * 
+//	 * @param protocol
+//	 *            The target protocol
+//	 * @return the services found, never {@code null}.
+//	 */
+//	public Collection<Service> findServicesByProtocol(String protocol);
 
 	/**
 	 * Access the available protocols for a given type.
