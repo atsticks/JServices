@@ -17,6 +17,8 @@
  */
 package org.jservice.registry;
 
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,7 +35,11 @@ import org.jservice.locator.ServiceResolver;
  * 
  * @author Anatole Tresch
  */
-public final class Service {
+public final class Service implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/** The service protocol, e.g. rmi, rest, soap, corba, http etc. */
 	private String protocol;
 	/** The port of the serice interface. */
@@ -46,9 +52,11 @@ public final class Service {
 	 */
 	private String location;
 	/** The exposed interfaces. */
-	private Set<String> interfaces;
+	private Set<String> interfaces = new HashSet<>();
 	/** The context, used for subselecting services. */
-	private Map<String, String> context = new HashMap<String, String>();;
+	private Map<String, String> context = new HashMap<String, String>();
+	/** Creation time. */
+	private long expiry = System.currentTimeMillis() * 30000L;
 
 	/**
 	 * Constructor, use the {@link Builder} for creating new {@link Service}
@@ -65,13 +73,14 @@ public final class Service {
 	 * @param interfaces
 	 *            The exposed interfaces, not {@code null} or empty.
 	 */
-	private Service(String protocol, String host, String location,
-			Map<String, String> context, Class... interfaces) {
+	private Service(String protocol, String host, int port, String location,
+			Map<String, String> context, String... interfaces) {
 		this.protocol = protocol;
 		this.host = host;
+		this.port = port;
 		this.location = location;
-		for (Class cl : interfaces) {
-			this.interfaces.add(cl.getName());
+		for (String cl : interfaces) {
+			this.interfaces.add(cl);
 		}
 	}
 
@@ -193,6 +202,43 @@ public final class Service {
 		return true;
 	}
 
+	public void updateExpiry() {
+		expiry = System.currentTimeMillis() * 30000L;
+	}
+
+	public boolean isExpired() {
+		return expiry > System.currentTimeMillis();
+	}
+
+	public boolean isImplementing(String type) {
+		return interfaces.contains(type);
+	}
+
+	public boolean isImplementationMatching(String nameExpression) {
+		for (String ifn : interfaces) {
+			if (ifn.matches(nameExpression)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean isMatchingContext(Map<String, String> contextExpressions) {
+		if (contextExpressions == null) {
+			return true;
+		}
+		for (Map.Entry<String, String> en : contextExpressions.entrySet()) {
+			String value = this.context.get(en.getKey());
+			if (value == null) {
+				return false;
+			}
+			if (!value.matches(en.getValue())) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -277,8 +323,9 @@ public final class Service {
 		 * @param interfaces
 		 *            the interfaces to set
 		 */
-		public final Builder withInterfaces(Set<String> interfaces) {
-			this.interfaces = Objects.requireNonNull(interfaces);
+		public final Builder withInterfaces(String... interfaces) {
+			this.interfaces.addAll(Arrays.asList(Objects
+					.requireNonNull(interfaces)));
 			return this;
 		}
 
@@ -297,8 +344,8 @@ public final class Service {
 		 * @return the new {@link Service}.
 		 */
 		public Service build() {
-			return new Service(protocol, host, location, context,
-					interfaces.toArray(new Class[interfaces.size()]));
+			return new Service(protocol, host, port, location, context,
+					interfaces.toArray(new String[interfaces.size()]));
 		}
 
 		/*
