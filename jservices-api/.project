@@ -10,14 +10,12 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
-		<buildCommand>
-			<name>org.eclipse.m2e.core.maven2Builder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 	</buildSpec>
 	<natures>
+<<<<<<< HEAD
 		<nature>org.eclipse.m2e.core.maven2Nature</nature>
+=======
+>>>>>>> branch 'master' of https://github.com/atsticks/JServices.git
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 </projectDescription>
