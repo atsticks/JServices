@@ -139,75 +139,16 @@ public final class Service implements Serializable {
 		return Collections.unmodifiableMap(context);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((context == null) ? 0 : context.hashCode());
-		result = prime * result + ((host == null) ? 0 : host.hashCode());
-		result = prime * result
-				+ ((interfaces == null) ? 0 : interfaces.hashCode());
-		result = prime * result
-				+ ((location == null) ? 0 : location.hashCode());
-		result = prime * result
-				+ ((protocol == null) ? 0 : protocol.hashCode());
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Builder other = (Builder) obj;
-		if (context == null) {
-			if (other.context != null)
-				return false;
-		} else if (!context.equals(other.context))
-			return false;
-		if (host == null) {
-			if (other.host != null)
-				return false;
-		} else if (!host.equals(other.host))
-			return false;
-		if (interfaces == null) {
-			if (other.interfaces != null)
-				return false;
-		} else if (!interfaces.equals(other.interfaces))
-			return false;
-		if (location == null) {
-			if (other.location != null)
-				return false;
-		} else if (!location.equals(other.location))
-			return false;
-		if (protocol == null) {
-			if (other.protocol != null)
-				return false;
-		} else if (!protocol.equals(other.protocol))
-			return false;
-		return true;
-	}
-
 	public void updateExpiry() {
 		expiry = System.currentTimeMillis() * 30000L;
 	}
 
 	public boolean isExpired() {
 		return expiry > System.currentTimeMillis();
+	}
+	
+	public boolean IsExpiredWithin(long withinPeriod) {
+		return (this.expiry - withinPeriod) >= System.currentTimeMillis();
 	}
 
 	public boolean isImplementing(String type) {
@@ -242,13 +183,78 @@ public final class Service implements Serializable {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((context == null) ? 0 : context.hashCode());
+		result = prime * result + ((host == null) ? 0 : host.hashCode());
+		result = prime * result
+				+ ((interfaces == null) ? 0 : interfaces.hashCode());
+		result = prime * result
+				+ ((location == null) ? 0 : location.hashCode());
+		result = prime * result + port;
+		result = prime * result
+				+ ((protocol == null) ? 0 : protocol.hashCode());
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Service other = (Service) obj;
+		if (context == null) {
+			if (other.context != null)
+				return false;
+		} else if (!context.equals(other.context))
+			return false;
+		if (host == null) {
+			if (other.host != null)
+				return false;
+		} else if (!host.equals(other.host))
+			return false;
+		if (interfaces == null) {
+			if (other.interfaces != null)
+				return false;
+		} else if (!interfaces.equals(other.interfaces))
+			return false;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!location.equals(other.location))
+			return false;
+		if (port != other.port)
+			return false;
+		if (protocol == null) {
+			if (other.protocol != null)
+				return false;
+		} else if (!protocol.equals(other.protocol))
+			return false;
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Service [protocol=" + protocol + ", host=" + host
-				+ ", location=" + location + ", interfaces=" + interfaces
-				+ ", context=" + context + "]";
+		return "Service " + protocol + "://" + host
+				+ ':' + port + (location.startsWith("/")?location:"/"+location) + "(interfaces=" + interfaces
+				+ ", context=" + context + ")";
 	}
 
 	/**
@@ -361,5 +367,6 @@ public final class Service implements Serializable {
 		}
 
 	}
+
 
 }

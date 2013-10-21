@@ -8,6 +8,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<!-- The Basics -->
 		<groupId>org.jservice</groupId>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>jservice-lib</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -54,7 +55,12 @@
 		<dependency>
 			<groupId>com.hazelcast</groupId>
 			<artifactId>hazelcast-all</artifactId>
-			<version>3.0.2</version>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.4</version>
 		</dependency>
 	</dependencies>
 </project>

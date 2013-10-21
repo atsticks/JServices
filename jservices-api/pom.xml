@@ -8,6 +8,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 		<!-- The Basics -->
 		<groupId>org.jservice</groupId>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>jservice-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>

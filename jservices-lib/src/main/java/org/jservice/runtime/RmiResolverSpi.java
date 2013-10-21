@@ -21,7 +21,7 @@ public class RmiResolverSpi implements ServiceResolverSpi {
 			throws ServiceResolutionException {
 		try {
 			return (T) Naming.lookup("//" + service.getHost() + ":"
-					+ service.getPort() + service.getLocation());
+					+ service.getPort() + "/" + service.getLocation());
 		} catch (MalformedURLException | RemoteException
 				| NotBoundException e) {
 			throw new ServiceResolutionException(service, e);
