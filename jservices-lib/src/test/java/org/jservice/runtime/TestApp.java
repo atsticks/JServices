@@ -7,7 +7,7 @@ import java.util.Set;
 import org.cloudplate.sample.Hello;
 import org.cloudplate.sample.impl.HelloImpl;
 import org.jservice.JService;
-import org.jservice.registry.Service;
+import org.jservice.catalog.Service;
 import org.jservice.runtime.servers.RMIServer;
 
 public class TestApp {

@@ -14,9 +14,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jservice.JService;
+import org.jservice.catalog.Service;
 import org.jservice.catalog.ServiceCatalog;
-import org.jservice.locator.ServiceResolutionException;
-import org.jservice.registry.Service;
+import org.jservice.catalog.ServiceResolutionException;
+import org.jservice.catalog.spi.ServiceResolverSpi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,8 @@ public abstract class AbstractServiceCatalog implements ServiceCatalog {
 
 	private final Random random = new Random();
 
+	private Map<String, ServiceResolverSpi> resolverSpis = new ConcurrentHashMap<String, ServiceResolverSpi>();
+
 	protected abstract void removeService(Service service);
 
 	@Override
@@ -38,6 +41,11 @@ public abstract class AbstractServiceCatalog implements ServiceCatalog {
 
 	@Override
 	public abstract void registerService(Service service);
+
+	public AbstractServiceCatalog() {
+		// TODO Use loading mechanism, eg ServiceLoader
+		resolverSpis.put("rmi", new RmiResolverSpi());
+	}
 
 	@Override
 	public Collection<Service> getServices(Class type,
@@ -151,7 +159,7 @@ public abstract class AbstractServiceCatalog implements ServiceCatalog {
 	private Service selectOne(Collection<Service> services) {
 		List<Service> serviceList = new ArrayList<>(services);
 		try {
-			if(serviceList.isEmpty()){
+			if (serviceList.isEmpty()) {
 				log.warn("No service available.");
 				return null;
 			}
@@ -201,7 +209,7 @@ public abstract class AbstractServiceCatalog implements ServiceCatalog {
 				if (service != null) {
 					try {
 						return method.invoke(
-								JService.getResolver().resolveService(
+								resolveService(
 										service,
 										interfaceType),
 								args);
@@ -220,6 +228,16 @@ public abstract class AbstractServiceCatalog implements ServiceCatalog {
 			throw new IllegalStateException("Service not available: "
 					+ interfaceType.getName());
 		}
+	}
+
+	@Override
+	public <T> T resolveService(Service service, Class<T> target)
+			throws ServiceResolutionException {
+		ServiceResolverSpi spi = resolverSpis.get(service.getProtocol());
+		if (spi != null) {
+			return spi.resolve(service, target);
+		}
+		throw new ServiceResolutionException(service);
 	}
 
 }

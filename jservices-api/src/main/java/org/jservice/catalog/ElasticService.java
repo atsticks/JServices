@@ -15,7 +15,7 @@
  * 
  * Contributors: Anatole Tresch - initial implementation.
  */
-package org.jservice.registry;
+package org.jservice.catalog;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

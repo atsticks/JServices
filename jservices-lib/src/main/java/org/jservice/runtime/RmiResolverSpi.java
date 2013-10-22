@@ -5,9 +5,9 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
-import org.jservice.locator.ServiceResolutionException;
-import org.jservice.locator.spi.ServiceResolverSpi;
-import org.jservice.registry.Service;
+import org.jservice.catalog.Service;
+import org.jservice.catalog.ServiceResolutionException;
+import org.jservice.catalog.spi.ServiceResolverSpi;
 
 public class RmiResolverSpi implements ServiceResolverSpi {
 

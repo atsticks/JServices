@@ -5,12 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jservice.registry.Service;
+import org.jservice.catalog.Service;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
@@ -22,7 +23,7 @@ import com.hazelcast.core.ItemEvent;
 import com.hazelcast.core.ItemListener;
 
 public class HazelcastServiceCatalog extends AbstractServiceCatalog {
-
+	private String catalogId;
 	private HazelcastInstance data;
 	private List<Service> allServices = Collections
 			.synchronizedList(new ArrayList<Service>());
@@ -30,8 +31,15 @@ public class HazelcastServiceCatalog extends AbstractServiceCatalog {
 			.synchronizedList(new ArrayList<Service>());
 	private Map<String, List<Service>> typedServices = new ConcurrentHashMap<String, List<Service>>();
 	private Timer timer = new Timer("Service Updater", true);
+	private static final String DEFAULT_CATALOG_ID = "default";
 
 	public HazelcastServiceCatalog() {
+		this(DEFAULT_CATALOG_ID);
+	}
+
+	public HazelcastServiceCatalog(String catalogId) {
+		Objects.requireNonNull(catalogId);
+		this.catalogId = catalogId;
 		log.info("Initializing Hazelcast service catalog...");
 		Config cfg = new Config();
 		data = Hazelcast.newHazelcastInstance(cfg);
@@ -145,6 +153,24 @@ public class HazelcastServiceCatalog extends AbstractServiceCatalog {
 		}
 		return services;
 	}
+	
+	@Override
+	public Collection<Service> getServices(Map<String,String> context) {
+		List<Service> services = new ArrayList<>();
+		for (Service service : this.allServices) {
+			for (String type : service.getInterfaces()) {
+				List<Service> typedList = typedServices.get(type);
+				if (typedList == null) {
+					typedList = new ArrayList<>();
+					this.typedServices.put(type, typedList);
+				}
+				synchronized (typedList) {
+					typedList.add(service);
+				}
+			}
+		}
+		return services;
+	}
 
 	@Override
 	public void registerService(Service service) {
@@ -157,10 +183,41 @@ public class HazelcastServiceCatalog extends AbstractServiceCatalog {
 		addLocally(service);
 	}
 
+	@Override
+	public String getCatalogId() {
+		return catalogId;
+	}
+
+	@Override
+	public boolean isAvailable() {
+		return data != null && data.getLifecycleService().isRunning();
+	}
+
+	@Override
+	public void unregisterService(Service service) {
+		removeService(service);
+	}
+
+	@Override
+	public void unregisterServices(Map<String, String> context) {
+		Collection<Service> services = getServices(context);
+		for (Service s : services) {
+			removeService(s);
+		}
+	}
+
+	@Override
+	public void unregisterServices(Class type) {
+		Collection<Service> services = getServices(type);
+		for (Service s : services) {
+			removeService(s);
+		}
+	}
+
 	public void addLocally(Service service) {
 		log.debug("Adding service locally: " + service + "...");
 		synchronized (this.allServices) {
-			if(!this.allServices.contains(service)){
+			if (!this.allServices.contains(service)) {
 				this.allServices.add(service);
 			}
 		}
@@ -177,7 +234,7 @@ public class HazelcastServiceCatalog extends AbstractServiceCatalog {
 				}
 			}
 			synchronized (concreteServices) {
-				if(!concreteServices.contains(service)){
+				if (!concreteServices.contains(service)) {
 					concreteServices.add(service);
 				}
 			}

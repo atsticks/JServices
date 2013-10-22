@@ -15,13 +15,34 @@
  * 
  * Contributors: Anatole Tresch - initial implementation.
  */
-package org.jservice.locator;
+package org.jservice.catalog;
 
-import org.jservice.registry.Service;
+import java.util.Objects;
 
-public interface ServiceResolver {
 
-	public <T> T resolveService(Service service, Class<T> target)
-			throws ServiceResolutionException;
+public class ServiceResolutionException extends RuntimeException {
+
+	/**
+	 * serialVersionUID.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private Service service;
+
+	public ServiceResolutionException(Service service) {
+		super("Service could not be resolved: " + service);
+		Objects.requireNonNull(service);
+		this.service = service;
+	}
+
+	public ServiceResolutionException(Service service, Throwable t) {
+		super("Service could not be resolved: " + service, t);
+		Objects.requireNonNull(service);
+		this.service = service;
+	}
+
+	public Service getService() {
+		return this.service;
+	}
 
 }

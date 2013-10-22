@@ -21,8 +21,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import org.jservice.registry.Service;
-
 /**
  * Models a distributed service catalog, describing all published services.
  * 
@@ -30,14 +28,21 @@ import org.jservice.registry.Service;
  */
 public interface ServiceCatalog {
 
-	// /**
-	// * Collect all available keys from the contexts of the currently
-	// registered
-	// * {@link Service} instances.
-	// *
-	// * @return the available context keys, never {@code null}.
-	// */
-	// public Set<String> getContextKeys();
+	/**
+	 * Access the id of the catalog.
+	 * 
+	 * @return the catalog id, never {@code null}.
+	 */
+	public String getCatalogId();
+
+	/**
+	 * Determines if the current instance is successfully a member of the
+	 * service catalog with the given id.
+	 * 
+	 * @return true, if this instance has successfully joined a catalog, and
+	 *         therefore is able to register services.
+	 */
+	public boolean isAvailable();
 
 	/**
 	 * Access all published service from this catalog.
@@ -59,8 +64,66 @@ public interface ServiceCatalog {
 	 */
 	public Collection<Service> getServices(Class interfaceType);
 
+	/**
+	 * Register a service into the catalog.
+	 * 
+	 * @param service
+	 *            The new service, not {@code null}.
+	 */
 	public void registerService(Service service);
 
+	/**
+	 * Unregisters a service from the catalog.
+	 * <p>
+	 * Depending on the catalog implementation there might by some latency until
+	 * the service is effectively removed from the cloud/cluster.
+	 * 
+	 * @param service
+	 *            the service descriptor.
+	 * @param context
+	 *            additional context, that allows to filter the service to be
+	 *            removed.
+	 */
+	public void unregisterService(Service service);
+
+	/**
+	 * Unregisters all service that match the given context. Hereby all
+	 * attributes within the context must match, as a regular expression, e.g.
+	 * 
+	 * <pre>
+	 * name=.*
+	 * vendor=org.jservice.*
+	 * </pre>
+	 * 
+	 * ...will remove all services from jservice (which may be a bad idea).
+	 * <p>
+	 * Depending on the catalog implementation there might by some latency until
+	 * the service is effectively removed from the cloud/cluster.
+	 * 
+	 * @param service
+	 *            the service descriptor.
+	 * @param context
+	 *            additional context, that allows to filter the service to be
+	 *            removed.
+	 */
+	public void unregisterServices(Map<String, String> context);
+
+	/**
+	 * Removes all service of a given type, regardless the context.
+	 * 
+	 * @param type
+	 *            The service interface to be completely removed from the
+	 *            catalog, not {@code null}.
+	 */
+	public void unregisterServices(Class type);
+
+	/**
+	 * Resolve a service proxy for the given target type.
+	 * 
+	 * @param interfaceType
+	 *            the target interface type, not {@code null},
+	 * @return the proxy instance, never {@code null}.
+	 */
 	public <T> T getService(Class<T> interfaceType);
 
 	/**
@@ -131,16 +194,6 @@ public interface ServiceCatalog {
 	public Collection<Service> findServices(String type,
 			Map<String, String> contextExpression);
 
-	//
-	// /**
-	// * Evaluate all {@link Service} instances, with the given protocol.
-	// *
-	// * @param protocol
-	// * The target protocol
-	// * @return the services found, never {@code null}.
-	// */
-	// public Collection<Service> findServicesByProtocol(String protocol);
-
 	/**
 	 * Access the available protocols for a given type.
 	 * 
@@ -172,4 +225,9 @@ public interface ServiceCatalog {
 	 *            the service to be locally removed.
 	 */
 	public void removeLocally(Service service);
+
+	public <T> T resolveService(Service service, Class<T> target)
+			throws ServiceResolutionException;
+
+	public Collection<Service> getServices(Map<String, String> context);
 }

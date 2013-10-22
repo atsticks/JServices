@@ -15,16 +15,27 @@
  * 
  * Contributors: Anatole Tresch - initial implementation.
  */
-package org.jservice.locator.spi;
+package org.jservice.catalog.spi;
 
-import org.jservice.locator.ServiceResolutionException;
-import org.jservice.registry.Service;
+import java.security.Provider.Service;
 
-public interface ServiceResolverSpi {
-
-	public String getProtocol();
+/**
+ * Implementations of this type can implicitly add/change context data, to a
+ * newly registered {@link Service}, before it is published on the catalog. As
+ * an example, a provider can add the current stage or implementation version
+ * information.
+ * 
+ * @author Anatole Tresch
+ */
+public interface ServiceContextProviderSpi {
 	
-	public <T> T resolve(Service service, Class<T> targetInterface)
-			throws ServiceResolutionException;
+	/**
+	 * Configures additional context on the given service.
+	 * 
+	 * @param service
+	 *            The service to be registered.
+	 * @return the (optionally) adapted service instance.
+	 */
+	public Service initContext(Service service);
 
 }

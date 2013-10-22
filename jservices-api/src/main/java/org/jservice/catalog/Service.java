@@ -15,7 +15,7 @@
  * 
  * Contributors: Anatole Tresch - initial implementation.
  */
-package org.jservice.registry;
+package org.jservice.catalog;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -26,8 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import org.jservice.catalog.ServiceCatalog;
-import org.jservice.locator.ServiceResolver;
 
 /**
  * This class models an abstract and serializable service descriptor, which are
