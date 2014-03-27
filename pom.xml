@@ -3,16 +3,14 @@
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>jservice-parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>jservices-parent</artifactId>
+	<version>0.1-SNAPSHOT</version>
 
 	<!-- The Basics -->
-	<groupId>org.jservice</groupId>
+	<groupId>org.jservices</groupId>
 	<description>Cloud Service Registry and Broker.</description>
-	<name>Transparent Service Cloud Library</name>
+	<name>JServices Library</name>
 	<packaging>pom</packaging>
-
-	<url>http://github.com/atsticks/servicecloud</url>
 
 	<properties>
 
@@ -33,6 +31,27 @@
 
 	</properties>
 
+    <url>http://github.com/atsticks/jservice/jservice-lib</url>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <debug>true</debug>
+                    <optimize>true</optimize>
+                    <verbose>true</verbose>
+                    <source>${maven.compile.sourceLevel}</source>
+                    <target>${maven.compile.targetLevel}</target>
+                    <compilerArgument>-g</compilerArgument>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -48,12 +67,20 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+            <scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.6.4</version>
+        </dependency>
 	</dependencies>
 
 	<modules>
 		<module>jservices-api</module>
-		<module>jservices-lib</module>
+		<module>jservices-catalogs</module>
+        <module>jservices-protocols</module>
+        <module>jservices-example-rmi</module>
 	</modules>
 
 </project>

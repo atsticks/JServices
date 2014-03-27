@@ -58,8 +58,6 @@ public interface ServiceCatalog {
 	 * 
 	 * @param interfaceType
 	 *            the required type, not {@code null}.
-	 * @param protocol
-	 *            the target protocols
 	 * @return the services found.
 	 */
 	public Collection<Service> getServices(Class interfaceType);
@@ -80,9 +78,6 @@ public interface ServiceCatalog {
 	 * 
 	 * @param service
 	 *            the service descriptor.
-	 * @param context
-	 *            additional context, that allows to filter the service to be
-	 *            removed.
 	 */
 	public void unregisterService(Service service);
 
@@ -100,8 +95,6 @@ public interface ServiceCatalog {
 	 * Depending on the catalog implementation there might by some latency until
 	 * the service is effectively removed from the cloud/cluster.
 	 * 
-	 * @param service
-	 *            the service descriptor.
 	 * @param context
 	 *            additional context, that allows to filter the service to be
 	 *            removed.
@@ -126,6 +119,16 @@ public interface ServiceCatalog {
 	 */
 	public <T> T getService(Class<T> interfaceType);
 
+    /**
+     * Resolves the given service.
+     * @param service the service descriptor.
+     * @param type The service type
+     * @param <T> The service type class
+     * @return the resolved instance, ready for use.
+     * @throws ServiceResolutionException if no such service is available.
+     */
+    public <T> T resolveService(Service service, Class<T> type) throws ServiceResolutionException;
+
 	/**
 	 * 
 	 * Access all published services of a certain type, provided by the given
@@ -133,8 +136,8 @@ public interface ServiceCatalog {
 	 * 
 	 * @param interfaceType
 	 *            the required type, not {@code null}.
-	 * @param protocol
-	 *            the target protocols
+	 * @param protocols
+	 *            the possible target protocols
 	 * @return the services found.
 	 */
 	public Collection<Service> getServices(Class interfaceType,
@@ -149,8 +152,8 @@ public interface ServiceCatalog {
 	 * @param pathExpression
 	 *            regular expression to evaluate the services to be selected,
 	 *            compared to the location path.
-	 * @param protocol
-	 *            the target protocols
+	 * @param protocols
+	 *            the possible target protocols
 	 * @return the services found.
 	 */
 	public Collection<Service> getServices(Class interfaceType,
@@ -177,7 +180,7 @@ public interface ServiceCatalog {
 	 * @return the services found.
 	 */
 	public Collection<Service> findServices(
-			Map<String, String> contextExpression);
+			Map<String, String> context);
 
 	/**
 	 * Evaluate all services that match the given context.
@@ -192,7 +195,7 @@ public interface ServiceCatalog {
 	 * @return the services found.
 	 */
 	public Collection<Service> findServices(String type,
-			Map<String, String> contextExpression);
+			Map<String, String> context);
 
 	/**
 	 * Access the available protocols for a given type.
@@ -225,9 +228,6 @@ public interface ServiceCatalog {
 	 *            the service to be locally removed.
 	 */
 	public void removeLocally(Service service);
-
-	public <T> T resolveService(Service service, Class<T> target)
-			throws ServiceResolutionException;
 
 	public Collection<Service> getServices(Map<String, String> context);
 }

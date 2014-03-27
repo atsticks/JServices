@@ -18,6 +18,7 @@
 package org.jservice.catalog;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,14 +39,14 @@ public final class Service implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	/** The service protocol, e.g. rmi, rest, soap, corba, http etc. */
+	/** The service protocol, e.g. openslp, rest, soap, corba, http etc. */
 	private String protocol;
 	/** The port of the serice interface. */
 	private int port;
 	/** The host or cluster ip address. */
 	private String host;
 	/**
-	 * The location identifier, to be interpreted by the {@link ServiceResolver}
+	 * The location identifier, to be interpreted by the {@link org.jservice.spi.ServiceResolverSpi}
 	 * to locate the service on the given host.
 	 */
 	private String location;
@@ -60,30 +61,20 @@ public final class Service implements Serializable {
 	 * Constructor, use the {@link Builder} for creating new {@link Service}
 	 * instances.
 	 * 
-	 * @param protocol
-	 *            The protocl
-	 * @param host
-	 *            The host
-	 * @param location
-	 *            The location identifier
-	 * @param context
-	 *            The context
-	 * @param interfaces
-	 *            The exposed interfaces, not {@code null} or empty.
+	 * @param builder
+	 *            The builder with all required data
 	 */
-	private Service(String protocol, String host, int port, String location,
-			Map<String, String> context, String... interfaces) {
-		this.protocol = protocol;
-		this.host = host;
-		this.port = port;
-		this.location = location;
-		for (String cl : interfaces) {
-			this.interfaces.add(cl);
-		}
+	private Service(Builder builder) {
+		this.protocol = builder.protocol;
+		this.host = builder.host;
+		this.port = builder.port;
+		this.location = builder.location;
+		this.interfaces.addAll(builder.interfaces);
+        this.context.putAll(builder.context);
 	}
 
 	/**
-	 * Access the service protocol, e.g. rmi, rest, soap, corba, http etc.
+	 * Access the service protocol, e.g. openslp, rest, soap, corba, http etc.
 	 * 
 	 * @return the protocol
 	 */
@@ -111,7 +102,7 @@ public final class Service implements Serializable {
 
 	/**
 	 * Access the location identifier, to be interpreted by the
-	 * {@link ServiceResolver} to locate the service on the given host.
+	 * {@link org.jservice.spi.ServiceResolverSpi} to locate the service on the given host.
 	 * 
 	 * @return the location
 	 */
@@ -137,8 +128,8 @@ public final class Service implements Serializable {
 		return Collections.unmodifiableMap(context);
 	}
 
-	public void updateExpiry() {
-		expiry = System.currentTimeMillis() * 30000L;
+	public void setExpiry(long durationInMS) {
+		expiry = System.currentTimeMillis() + durationInMS;
 	}
 
 	public boolean isExpired() {
@@ -255,6 +246,15 @@ public final class Service implements Serializable {
 				+ ", context=" + context + ")";
 	}
 
+    public URI toURI(){
+        try{
+            return new URI(protocol,null,host,port,getLocation(),context.get("query"),context.get("fragment"));
+        }
+        catch(Exception e){
+            throw new IllegalStateException("Failed to create URI for "+ this, e);
+        }
+    }
+
 	/**
 	 * Builder to create new instances of {@link Service} using a fluent
 	 * programming style.
@@ -274,6 +274,19 @@ public final class Service implements Serializable {
 		private Set<String> interfaces = new HashSet<String>();
 		/** The service context, @see {@link Service#context}. */
 		private Map<String, String> context = new HashMap<String, String>();
+        /** Creation time. */
+        private long expiry = System.currentTimeMillis() * 30000L;
+
+        /**
+         * Sets the expiry in ms.
+         *
+         * @param expiration duration in ms
+         *            the protocol to set
+         */
+        public final Builder setExpiry(long expiration) {
+            this.expiry = System.currentTimeMillis() + expiration;
+            return this;
+        }
 
 		/**
 		 * Constructor.
@@ -281,9 +294,8 @@ public final class Service implements Serializable {
 		 * @param protocol
 		 *            the protocol to set
 		 */
-		public final Builder withProtocol(String protocol) {
+		public final Builder setProtocol(String protocol) {
 			this.protocol = Objects.requireNonNull(protocol);
-			;
 			return this;
 		}
 
@@ -293,19 +305,18 @@ public final class Service implements Serializable {
 		 * @param host
 		 *            the host to set
 		 */
-		public final Builder withHost(String host) {
+		public final Builder setHost(String host) {
 			this.host = Objects.requireNonNull(host);
-			;
 			return this;
 		}
 
 		/**
-		 * Sets the service host.
+		 * Sets the service port.
 		 * 
-		 * @param host
-		 *            the host to set
+		 * @param port
+		 *            the port to set
 		 */
-		public final Builder withPort(int port) {
+		public final Builder setPort(int port) {
 			this.port = port;
 			return this;
 		}
@@ -316,7 +327,7 @@ public final class Service implements Serializable {
 		 * @param location
 		 *            the location to set
 		 */
-		public final Builder withLocation(String location) {
+		public final Builder setLocation(String location) {
 			this.location = Objects.requireNonNull(location);
 			return this;
 		}
@@ -327,17 +338,18 @@ public final class Service implements Serializable {
 		 * @param interfaces
 		 *            the interfaces to set
 		 */
-		public final Builder withInterfaces(String... interfaces) {
+		public final Builder setInterfaces(String... interfaces) {
 			this.interfaces.addAll(Arrays.asList(Objects
 					.requireNonNull(interfaces)));
 			return this;
 		}
 
 		/**
-		 * @param attribtues
-		 *            the attribtues to set
+         * Sets the service's additional (optional) context.
+		 * @param context
+		 *            the context to set
 		 */
-		public final Builder withContext(Map<String, String> context) {
+		public final Builder setContext(Map<String, String> context) {
 			this.context = Objects.requireNonNull(context);
 			return this;
 		}
@@ -348,8 +360,7 @@ public final class Service implements Serializable {
 		 * @return the new {@link Service}.
 		 */
 		public Service build() {
-			return new Service(protocol, host, port, location, context,
-					interfaces.toArray(new String[interfaces.size()]));
+			return new Service(this);
 		}
 
 		/*
@@ -361,7 +372,7 @@ public final class Service implements Serializable {
 		public String toString() {
 			return "Service.Builder [protocol=" + protocol + ", host=" + host
 					+ ", location=" + location + ", interfaces=" + interfaces
-					+ ", context=" + context + "]";
+					+ ", context=" + context +  ", expiry=" + expiry  + "]";
 		}
 
 	}

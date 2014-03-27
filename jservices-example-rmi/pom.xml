@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>jservices-parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
+		<!-- The Basics -->
+		<groupId>org.jservices</groupId>
+		<relativePath>..</relativePath>
+	</parent>
+	<artifactId>jservices-example-rmi</artifactId>
+	<version>0.1-SNAPSHOT</version>
+
+	<!-- The Basics -->
+	<description>Cloud Service Registry and Broker (Library) - Example.</description>
+	<name>JService Example RMI</name>
+	<packaging>jar</packaging>
+
+	<url>http://github.com/atsticks/jservice/jservice-example</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.jboss.weld.se</groupId>
+			<artifactId>weld-se</artifactId>
+			<version>1.1.5.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jservices</groupId>
+			<artifactId>jservices-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+        <dependency>
+            <groupId>org.jservices.protocols</groupId>
+            <artifactId>jservices-protocol-rmi</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jservices.catalogs</groupId>
+            <artifactId>jservices-catalog-hazelcast</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+	</dependencies>
+</project>
